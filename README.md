@@ -455,30 +455,6 @@ Expected:
 
 ---
 
-# 📸 Required Submission Screenshots
-
-| Screenshot                 | Description              |
-| -------------------------- | ------------------------ |
-| high_urgency_flow.png      | Slack + Trello execution |
-| normal_flow.png            | Gmail + Final logs       |
-| failure_dead_letter.png    | DLQ failure capture      |
-| daily_digest_execution.png | Daily digest execution   |
-
----
-
-# 📦 Deliverables
-
-The submission package contains:
-
-```text
-✔ Exported n8n workflow JSON files
-✔ Setup documentation
-✔ Sample webhook payloads
-✔ Workflow execution screenshots
-✔ Reliability & DLQ implementation
-```
-
----
 
 # 🔮 Future Enhancements
 
