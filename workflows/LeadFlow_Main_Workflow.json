@@ -1,0 +1,1013 @@
+{
+  "name": "LeadFlow_Main_Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -608,
+        -464
+      ],
+      "id": "af90ac1c-f779-42a5-a8a5-ce52a6118a10",
+      "name": "Webhook",
+      "webhookId": "8cef0656-e833-4374-9fe2-feb47bae8d10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e93799ed-9a86-4b71-ab6c-d64a17297576",
+              "leftValue": "={{ $json.isSpamLead }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        -720
+      ],
+      "id": "a2233508-19a1-42b4-90be-161c573931a9",
+      "name": "Spam_Routing_Layer"
+    },
+    {
+      "parameters": {
+        "jsCode": "const customerEmail = $json.body.email;\n\nlet inferredCompany = \"\";\n\nif (customerEmail.includes(\"@\")) {\n  const emailDomain = customerEmail.split(\"@\")[1];\n  inferredCompany = emailDomain.split(\".\")[0];\n}\n\nreturn [\n  {\n    json: {\n      ...$json,\n      inferredCompany\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -448
+      ],
+      "id": "4bb259df-fe89-4aec-9f21-66d32899381b",
+      "name": "Company_Enrichment_Layer"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo",
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Leads_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "leadId": "={{Date.now()}}",
+            "customerName": "={{$node[\"Company_Enrichment_Layer\"].json.body.name}}",
+            "customerEmail": "={{$node[\"Company_Enrichment_Layer\"].json.body.email}}",
+            "message": "={{$node[\"Company_Enrichment_Layer\"].json.body.message}}",
+            "urgency": "={{$node[\"Company_Enrichment_Layer\"].json.body.urgency}}",
+            "inferredCompany": "={{$node[\"Company_Enrichment_Layer\"].json.inferredCompany}}",
+            "product": "={{$node[\"Company_Enrichment_Layer\"].json.body.product}}",
+            "isSpamLead": "={{$node[\"Company_Enrichment_Layer\"].json.isSpamLead}}",
+            "createdAt": "={{new Date().toISOString()}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "leadId",
+              "displayName": "leadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customerName",
+              "displayName": "customerName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customerEmail",
+              "displayName": "customerEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "inferredCompany",
+              "displayName": "inferredCompany",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urgency",
+              "displayName": "urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "product",
+              "displayName": "product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isSpamLead",
+              "displayName": "isSpamLead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "createdAt",
+              "displayName": "createdAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        -240
+      ],
+      "id": "2dd71fdb-435f-470d-9ee8-ccda8c9dfd5d",
+      "name": "Google_Sheets_Storage_Layer",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zlVONbaNuyGMHYKD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "283ccfac-a315-4c9d-84b8-5570598c7106",
+              "leftValue": "={{$node[\"Company_Enrichment_Layer\"].json.body.urgency}}",
+              "rightValue": "high",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        -240
+      ],
+      "id": "6b3d40d8-dd1f-4213-a216-49935a4de6c6",
+      "name": "Urgency_Routing_Layer"
+    },
+    {
+      "parameters": {
+        "jsCode": "const spamKeywords = [\n  \"buy now\",\n  \"free money\",\n  \"click here\",\n  \"lottery\",\n  \"casino\",\n  \"win cash\"\n];\n\nconst leadMessage = $json.body.message.toLowerCase();\n\nconst isSpamLead = spamKeywords.some(keyword =>\n  leadMessage.includes(keyword)\n);\n\nreturn [\n  {\n    json: {\n      ...$json,\n      isSpamLead\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        -720
+      ],
+      "id": "8a2cf4a8-a2fb-4e25-9b33-ff598d1ede9d",
+      "name": "spam_detection"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo",
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Leads_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=customerEmail",
+              "lookupValue": "={{$json.body.email}}"
+            },
+            {
+              "lookupColumn": "message",
+              "lookupValue": "={{$json.body.message}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        -448
+      ],
+      "id": "826750d6-ee20-4672-aca6-c551fb70d612",
+      "name": "Idempotency_Check_Layer",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "retryOnFail": false,
+      "executeOnce": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zlVONbaNuyGMHYKD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c87b2c2d-6dc0-40b3-9233-c4d0a58478e6",
+              "leftValue": "={{$json.customerEmail || \"\"}}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        -448
+      ],
+      "id": "ff6d123f-16a0-4a5d-96bc-eccb7d7683de",
+      "name": "Duplicate_Request_Check"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B4ZCHFLS1",
+          "mode": "list",
+          "cachedResultName": "back"
+        },
+        "text": "=Customer: {{$json.customerName}}\n\nEmail: {{$json.customerEmail}}\n\nCompany: {{$json.inferredCompany}}\n\nIssue:\n{{$json.message}}\n\nProduct:\n{{$json.product}}\n\nUrgency:\n{{$json.urgency}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1392,
+        -480
+      ],
+      "id": "485bc071-84ab-4d0f-b6c2-e1668dd61a88",
+      "name": "Send a message",
+      "webhookId": "1f568111-82f6-4354-9a08-5e47ef0971eb",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "slackApi": {
+          "id": "JKfyqcDEFgpatXsD",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "6a0ddd2ecc09f76ea53a75df",
+        "name": "==`${$json.product} Issue - ${$json.customerName}`",
+        "description": "=`Customer Name:\n${$json.customerName}\n\nCustomer Email:\n${$json.customerEmail}\n\nCompany:\n${$json.inferredCompany}\n\nIssue:\n${$json.message}\n\nUrgency:\n${$json.urgency}\n\nLead ID:\n${$json.leadId}`}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -480
+      ],
+      "id": "c275c03f-5374-4f2b-a093-dad164d9de50",
+      "name": "Create a card",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "trelloApi": {
+          "id": "zPFeJTNhWLFCoVNO",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json.customerEmail}}",
+        "subject": "Lead Received Successfully - LeadFlow Support",
+        "emailType": "text",
+        "message": "={{\"Hello \" + $json.customerName + \",\\n\\nThank you for contacting LeadFlow Support.\\n\\nWe have successfully received your request regarding:\\n\\n\\\"\" + $json.message + \"\\\"\\n\\nOur support team will review your request and get back to you shortly.\\n\\nLead ID: \" + $json.leadId + \"\\n\\nRegards,\\nLeadFlow Support Team\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1536,
+        -224
+      ],
+      "id": "4ba7647e-9eb8-4d86-bcea-650a4329d344",
+      "name": "Send a message1",
+      "webhookId": "f7f1f0ba-6be4-4d01-b73f-e31a67d160dd",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wg9B9791SYl3wVq6",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        192
+      ],
+      "id": "2937bc8f-ad35-493c-80a7-a78ace88c06c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo",
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Leads_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        192
+      ],
+      "id": "67aab67a-bedf-42f2-abd3-d313bdbb3a58",
+      "name": "Fetch_All_Leads",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zlVONbaNuyGMHYKD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const leads = items.map(item => item.json);\n\nconst urgencyCount = {};\nconst productCount = {};\n\n// Count urgency and product\nfor (const lead of leads) {\n\n  const urgency = lead.urgency || \"unknown\";\n  urgencyCount[urgency] =\n    (urgencyCount[urgency] || 0) + 1;\n\n  const product = lead.product || \"unknown\";\n  productCount[product] =\n    (productCount[product] || 0) + 1;\n}\n\n// Get top 5 recent leads\nconst recentLeads = leads\n  .sort((a, b) =>\n    new Date(b.createdAt) -\n    new Date(a.createdAt)\n  )\n  .slice(0, 5);\n\n// Build digest message\nlet digestMessage = `DAILY LEAD DIGEST\\n\\n`;\n\ndigestMessage += `Count by Urgency\\n`;\n\nfor (const [key, value] of Object.entries(urgencyCount)) {\n  digestMessage += `${key}: ${value}\\n`;\n}\n\ndigestMessage += `\\nCount by Product\\n`;\n\nfor (const [key, value] of Object.entries(productCount)) {\n  digestMessage += `${key}: ${value}\\n`;\n}\n\ndigestMessage += `\\nTop 5 Recent Leads\\n`;\n\nrecentLeads.forEach((lead, index) => {\n  digestMessage += `${index + 1}. ${lead.customerName} - ${lead.message}\\n`;\n});\n\nreturn [\n  {\n    json: {\n      digest: digestMessage\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        192
+      ],
+      "id": "ac832d2a-1ae3-4d78-bb49-aa994e9859a8",
+      "name": "Daily_Digest_Aggregator"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B4ZCHFLS1",
+          "mode": "list",
+          "cachedResultName": "back"
+        },
+        "text": "={{$json.digest}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        208,
+        192
+      ],
+      "id": "a2de33de-863a-4eec-b5c5-3e1bcadadaeb",
+      "name": "Digest_Report",
+      "webhookId": "690f1fb2-8b70-45c2-890c-6a92e070002d",
+      "credentials": {
+        "slackApi": {
+          "id": "JKfyqcDEFgpatXsD",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"message\": \"Lead processed successfully \"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1808,
+        -480
+      ],
+      "id": "e19a5a9f-d49e-4c6b-86b8-a54bea5747fc",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1b5a6967-7e89-4748-b562-f4382ea44dba",
+              "leftValue": "={{$json.body.email}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ee4d8e1e-b4cb-485d-9ceb-5242905cbc4d",
+              "leftValue": "={{ $json.body.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "1a82c1bf-3895-4e57-a041-bb90b25b9b90",
+              "leftValue": "={{ $json.body.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c259e883-a43e-41cc-984d-60eac3d83b0c",
+              "leftValue": "={{ $json.body.product}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a67dd272-1732-4c73-af3a-e5664c4b2a41",
+              "leftValue": "={{ $json.body.urgency}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -432,
+        -464
+      ],
+      "id": "db51dd32-f356-46d5-b83b-2b929ed5713e",
+      "name": "Validation"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo",
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Leads_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1296400593,
+          "mode": "list",
+          "cachedResultName": "Logs_urgency",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit#gid=1296400593"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "RECIEVED",
+            "leadId": "={{$json.leadId}}",
+            "updatedAt": "={{new Date().toISOString()}}",
+            "customerEmail": "={{$json.customerEmail}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "leadId",
+              "displayName": "leadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customerEmail",
+              "displayName": "customerEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updatedAt",
+              "displayName": "updatedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1904,
+        32
+      ],
+      "id": "08adaf7f-3d74-414c-83db-eab66991fdee",
+      "name": "Final logs sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zlVONbaNuyGMHYKD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1680,
+        32
+      ],
+      "id": "2814af17-e25a-4876-ab51-34ce3875aab3",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        512
+      ],
+      "id": "85aa29f4-db3c-47d0-aea8-a208df6d58dc",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo",
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Leads_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1441598885,
+          "mode": "list",
+          "cachedResultName": "LeadFlow_Failure_Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1X0lbHizI5SVbCFvUj36O5gtwOUH5zRyiAa5i0z-iUKo/edit#gid=1441598885"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "failedPayload": "={{JSON.stringify($json)}}",
+            "failedNode": "={{$json.execution.lastNodeExecuted}}",
+            "errorMessage": "={{$json.execution.error.message}}",
+            "failedAt": "={{new Date().toISOString()}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "failedPayload",
+              "displayName": "failedPayload",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failedNode",
+              "displayName": "failedNode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "errorMessage",
+              "displayName": "errorMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failedAt",
+              "displayName": "failedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        512
+      ],
+      "id": "7e050e59-b578-4898-b461-673f5e2788bc",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zlVONbaNuyGMHYKD",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spam_Routing_Layer": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Company_Enrichment_Layer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company_Enrichment_Layer": {
+      "main": [
+        [
+          {
+            "node": "Idempotency_Check_Layer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google_Sheets_Storage_Layer": {
+      "main": [
+        [
+          {
+            "node": "Urgency_Routing_Layer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "spam_detection": {
+      "main": [
+        [
+          {
+            "node": "Spam_Routing_Layer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Idempotency_Check_Layer": {
+      "main": [
+        [
+          {
+            "node": "Duplicate_Request_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate_Request_Check": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google_Sheets_Storage_Layer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Urgency_Routing_Layer": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Create a card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch_All_Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch_All_Leads": {
+      "main": [
+        [
+          {
+            "node": "Daily_Digest_Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily_Digest_Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Digest_Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a card": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation": {
+      "main": [
+        [
+          {
+            "node": "spam_detection",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Final logs sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Final logs sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d6e607eb-774c-4e27-9f50-1535054aa45f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3cb541bebbc03d10f0d91844d2ba3e19d0dbc83574047f6a914c31dc7a75338c"
+  },
+  "id": "Hpkwj3KZhRFjR0sm",
+  "tags": []
+}

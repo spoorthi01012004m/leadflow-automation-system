@@ -1,0 +1,72 @@
+[
+{
+"name": "John",
+"email": "[john@google.com](mailto:john@google.com)",
+"message": "Payment gateway issue",
+"urgency": "high",
+"product": "AI Platform"
+},
+{
+"name": "Alice",
+"email": "[alice@microsoft.com](mailto:alice@microsoft.com)",
+"message": "Need account support",
+"urgency": "low",
+"product": "Cloud Dashboard"
+},
+{
+"name": "Robert",
+"email": "[robert@amazon.com](mailto:robert@amazon.com)",
+"message": "Database latency issue",
+"urgency": "high",
+"product": "Data Engine"
+},
+{
+"name": "Sophia",
+"email": "[sophia@meta.com](mailto:sophia@meta.com)",
+"message": "Unable to login",
+"urgency": "low",
+"product": "Analytics Suite"
+},
+{
+"name": "David",
+"email": "[david@netflix.com](mailto:david@netflix.com)",
+"message": "Critical production outage",
+"urgency": "high",
+"product": "Streaming Engine"
+},
+{
+"name": "Emma",
+"email": "[emma@openai.com](mailto:emma@openai.com)",
+"message": "Billing clarification required",
+"urgency": "low",
+"product": "Billing Portal"
+},
+{
+"name": "Liam",
+"email": "[liam@tesla.com](mailto:liam@tesla.com)",
+"message": "Urgent API timeout issue",
+"urgency": "high",
+"product": "Fleet API"
+},
+{
+"name": "Olivia",
+"email": "[olivia@spotify.com](mailto:olivia@spotify.com)",
+"message": "Dashboard metrics mismatch",
+"urgency": "low",
+"product": "Insights Dashboard"
+},
+{
+"name": "Noah",
+"email": "[noah@ibm.com](mailto:noah@ibm.com)",
+"message": "Need urgent infrastructure support",
+"urgency": "high",
+"product": "Cloud Infra"
+},
+{
+"name": "Mia",
+"email": "[mia@oracle.com](mailto:mia@oracle.com)",
+"message": "Password reset request",
+"urgency": "low",
+"product": "Identity Manager"
+}
+]
